@@ -17,11 +17,18 @@ TagManager:
   - Bun
   - Lettuce
   - Sliced
+  - Plate
+  - DeliveryStation
+  - Customer
+  - OrderSpawner
+  - LineSpot
+  - CashierStation
+  - LeaveZone
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Customer
   - Water
   - UI
   - Interactable

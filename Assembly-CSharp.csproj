@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{915200CE-0FF0-0ED9-E2DF-1E16A891CE57}</ProjectGuid>
+    <ProjectGuid>{DBD0D00D-32B1-95F0-5B99-9839F3AB4FF6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -55,16 +55,23 @@
     <UnityVersion>2021.3.43f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\OrderSpawner.cs" />
+    <Compile Include="Assets\Scripts\IngredientType.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\RawItem.cs" />
     <Compile Include="Assets\Scripts\PlayerInteraction.cs" />
+    <Compile Include="Assets\Scripts\CustomerMovement.cs" />
     <Compile Include="Assets\Scripts\CookingStation.cs" />
+    <Compile Include="Assets\Scripts\SlicingStation.cs" />
     <Compile Include="Assets\Scripts\GrillStation.cs" />
     <Compile Include="Assets\Scripts\StaminaBarFollow.cs" />
-    <Compile Include="Assets\Scripts\SlicingStation.cs" />
+    <Compile Include="Assets\Scripts\DeliveryStation.cs" />
+    <Compile Include="Assets\Scripts\CustomerSpawner.cs" />
+    <Compile Include="Assets\Scripts\WaitingLine.cs" />
+    <Compile Include="Assets\Scripts\CashierStation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

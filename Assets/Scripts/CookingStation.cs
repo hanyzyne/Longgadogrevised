@@ -1,13 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CookingStation : MonoBehaviour
 {
     public float cookingTime = 5f; // Time to cook the item
     public float burnTime = 10f; // Time before the item burns
-    public GameObject cookedItemPrefab; // Prefab for the cooked item
+    public List<GameObject> cookedItemPrefab; // Prefab for the cooked item
     public GameObject burntItemPrefab; // Prefab for the burnt item
-    public GameObject rawItemPrefab; // Prefab for the raw item visual representation
+    public List<GameObject> rawItemPrefab; // Prefab for the raw item visual representation
 
     private GameObject currentItem; // The item currently being cooked
     private Coroutine cookingCoroutine; // Reference to the cooking coroutine
@@ -28,8 +29,10 @@ public class CookingStation : MonoBehaviour
             isBurnt = false; // Reset burn state
             isCooked = false; // Reset cooked state
 
+            int prefabIndex = GetPrefabIndex(item.name);
+
             // Instantiate the visual representation of the raw item
-            visualItem = Instantiate(rawItemPrefab, transform.position, Quaternion.identity);
+            visualItem = Instantiate(rawItemPrefab[prefabIndex], transform.position, Quaternion.identity);
             visualItem.transform.SetParent(transform); // Optional: Set parent to keep it organized
 
             Debug.Log($"{item.name} is now cooking.");
@@ -41,12 +44,22 @@ public class CookingStation : MonoBehaviour
         }
     }
 
+    private int GetPrefabIndex(string itemName)
+    {
+        // You can customize this mapping logic to match item names to prefab indices
+        if (itemName.Contains("Normal")) return 0;
+        if (itemName.Contains("Footlong")) return 1;
+        if (itemName.Contains("Sausage")) return 2;
+
+        return -1; // Return -1 if no matching prefab is found
+    }
+
     public GameObject RemoveItem()
     {
         if (currentItem != null && isCooked) // Only return item if it's cooked
         {
             Debug.Log("Cooked item has been removed.");
-            GameObject instantiatedItem = Instantiate(cookedItemPrefab, transform.position, Quaternion.identity);
+            GameObject instantiatedItem = Instantiate(cookedItemPrefab[GetPrefabIndex(currentItem.name)], transform.position, Quaternion.identity);
             Destroy(currentItem); // Destroy the current item after instantiation
             Destroy(visualItem); // Destroy visual representation of the item
             currentItem = null; // Reset current item
@@ -80,7 +93,7 @@ public class CookingStation : MonoBehaviour
 
             // Update visual representation to cooked item
             Destroy(visualItem); // Destroy raw item visual
-            visualItem = Instantiate(cookedItemPrefab, transform.position, Quaternion.identity);
+            visualItem = Instantiate(cookedItemPrefab[GetPrefabIndex(currentItem.name)], transform.position, Quaternion.identity);
             visualItem.transform.SetParent(transform); // Optional: Set parent to keep it organized
         }
 

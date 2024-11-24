@@ -6,7 +6,10 @@ public class PlayerInteraction : MonoBehaviour
     public Transform holdPosition;
     private CookingStation nearbyCookingStation;
     private SlicingStation nearbySlicingStation; // Reference to the nearby slicing station
+    private DeliveryStation nearbyDeliveryStation;
+    private CashierStation nearbyCashierStation;
     private GameObject nearbyItem;
+    
 
     public Transform dropPosition; // Position where the item will be dropped
 
@@ -22,7 +25,7 @@ public class PlayerInteraction : MonoBehaviour
             DropItem();
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) )
         {
             SliceItem();
         }
@@ -69,6 +72,16 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.Log($"{heldItem.name} picked up from the slicing station.");
             }
         }
+        else if (heldItem != null && nearbyDeliveryStation != null)
+        {
+            nearbyDeliveryStation.PlaceIngredient(heldItem);
+            heldItem.SetActive(false);
+            heldItem = null;
+        }
+        else if (heldItem == null && nearbyCashierStation != null)
+        {
+            nearbyCashierStation.checkOrder();
+        }
         else
         {
             Debug.Log("No valid interaction available.");
@@ -101,7 +114,7 @@ public class PlayerInteraction : MonoBehaviour
     private void SliceItem()
     {
         // Slice the item currently on the slicing station
-        if (nearbySlicingStation != null)
+        if (nearbySlicingStation != null && heldItem == null && nearbySlicingStation.currentItem != null)
         {
             nearbySlicingStation.SliceItem();
         }
@@ -113,13 +126,21 @@ public class PlayerInteraction : MonoBehaviour
         {
             nearbyCookingStation = collision.collider.GetComponent<CookingStation>();
         }
-        else if ((collision.collider.CompareTag("Bun") || collision.collider.CompareTag("Lettuce") || collision.collider.CompareTag("Raw")) && heldItem == null)
+        else if ((collision.collider.CompareTag("Bun") || collision.collider.CompareTag("Lettuce") || collision.collider.CompareTag("Raw") || collision.collider.CompareTag("Plate")) && heldItem == null)
         {
             nearbyItem = collision.gameObject;
         }
         else if (collision.collider.CompareTag("SlicingStation"))
         {
             nearbySlicingStation = collision.collider.GetComponent<SlicingStation>();
+        }
+        else if (collision.collider.CompareTag("DeliveryStation"))
+        {
+            nearbyDeliveryStation = collision.collider.GetComponent<DeliveryStation>(); 
+        }
+        else if (collision.collider.CompareTag("CashierStation"))
+        {
+            nearbyCashierStation = collision.collider.GetComponent<CashierStation>();
         }
     }
 
@@ -136,6 +157,10 @@ public class PlayerInteraction : MonoBehaviour
         else if (collision.collider.CompareTag("SlicingStation"))
         {
             nearbySlicingStation = null;
+        }
+        else if (collision.collider.CompareTag("DeliveryStation"))
+        {
+            nearbyDeliveryStation = null;
         }
     }
 }
