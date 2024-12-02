@@ -6,7 +6,7 @@ public class CustomerMovement : MonoBehaviour
     public Transform[] lineSpots;
     public int currentSpotIndex = -1;
     private bool isMoving = false;
-    public float timer = 35f;
+    public float timer = 420f;
     private bool isTimerActive = false;
     private int spotIndex = -1;
 

@@ -45,7 +45,7 @@ public class CustomerSpawner : MonoBehaviour
             if (waitingLine.GetNumberOfCustomers() < 6 && isSpawningAllowed)
             {
                 // Wait for a random time between 8 to 12 seconds
-                float waitTime = Random.Range(10f, 30f);
+                float waitTime = Random.Range(60f, 180f);
                 yield return new WaitForSeconds(waitTime);
 
                 // Spawn another customer if the queue is not full
