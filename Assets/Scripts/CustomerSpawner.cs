@@ -24,6 +24,11 @@ public class CustomerSpawner : MonoBehaviour
         StartCoroutine(SpawnCustomers());
     }
 
+    private void Update()
+    {
+
+    }
+
     // Coroutine to handle customer spawning
     private IEnumerator SpawnCustomers()
     {
@@ -34,13 +39,13 @@ public class CustomerSpawner : MonoBehaviour
         SpawnCustomer();
 
         // Loop to spawn customers at random intervals (between 8-12 seconds)
-        while (true)
+        while (isSpawningAllowed)
         {
             // Check the number of customers in the queue before spawning
-            if (waitingLine.GetNumberOfCustomers() < 5 && isSpawningAllowed)
+            if (waitingLine.GetNumberOfCustomers() < 6 && isSpawningAllowed)
             {
                 // Wait for a random time between 8 to 12 seconds
-                float waitTime = Random.Range(5f, 10f);
+                float waitTime = Random.Range(10f, 30f);
                 yield return new WaitForSeconds(waitTime);
 
                 // Spawn another customer if the queue is not full
@@ -82,7 +87,7 @@ public class CustomerSpawner : MonoBehaviour
                 waitingLine.AddCustomerToQueue(newCustomer);
 
                 // If a customer successfully joins the queue, the spawning flag should be reset.
-                if (waitingLine.GetNumberOfCustomers() >= 5)
+                if (waitingLine.GetNumberOfCustomers() >= 6)
                 {
                     isSpawningAllowed = false; // Stop spawning when the queue is full
                 }
@@ -97,6 +102,14 @@ public class CustomerSpawner : MonoBehaviour
             Debug.LogError("Customer Prefab, Spawn Point, or Waiting Line is not assigned!");
         }
     }
+
+    public void EnableSpawning()
+    {
+        isSpawningAllowed = true;
+        StartCoroutine(SpawnCustomers());
+        Debug.Log("Spawning is allowed again.");
+    }
+
 
 
 }

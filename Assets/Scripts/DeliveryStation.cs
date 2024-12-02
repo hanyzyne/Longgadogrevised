@@ -11,13 +11,21 @@ public class DeliveryStation : MonoBehaviour
         if (item != null && isPlaceable(item))
         {
             IngredientType ingredientType = item.GetComponent<IngredientType>();
-            ingredientsPlaced.Add(ingredientType.ingredientType);
-            Debug.Log($"Added ingredient: {ingredientType.ingredientType}");
+
+            if (!ingredientsPlaced.Contains(ingredientType.ingredientType)) // Check if the ingredient already exists
+            {
+                ingredientsPlaced.Add(ingredientType.ingredientType);
+                Debug.Log($"Added ingredient: {ingredientType.ingredientType}");
+            }
+            else
+            {
+                Debug.LogWarning($"Ingredient {ingredientType.ingredientType} already placed. Duplicate not allowed.");
+            }
         }
     }
 
     private bool isPlaceable(GameObject item)
     {
-        return item.CompareTag("Plate") || item.CompareTag("Cooked") || item.CompareTag("Sliced");
+        return item.CompareTag("Plate") || item.CompareTag("Cooked") || item.CompareTag("Sliced") || item.CompareTag("Condiments");
     }
 }

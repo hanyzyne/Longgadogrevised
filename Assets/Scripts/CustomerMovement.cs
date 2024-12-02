@@ -4,9 +4,9 @@ using System.Collections;
 public class CustomerMovement : MonoBehaviour
 {
     public Transform[] lineSpots;
-    private int currentSpotIndex = -1;
+    public int currentSpotIndex = -1;
     private bool isMoving = false;
-    private float timer = 35f;
+    public float timer = 35f;
     private bool isTimerActive = false;
     private int spotIndex = -1;
 
@@ -39,9 +39,12 @@ public class CustomerMovement : MonoBehaviour
 
     public void MoveToSpot(Vector3 targetPosition, int index)
     {
+        WaitingLine waitingLine = FindObjectOfType<WaitingLine>();
+        waitingLine.spotOccupied[index] = false;
         currentSpotIndex = index;
         spotIndex = index;
         StartCoroutine(MoveToPosition(targetPosition));
+        waitingLine.spotOccupied[index] = true;
     }
 
     private IEnumerator MoveToPosition(Vector3 targetPosition)
@@ -62,8 +65,11 @@ public class CustomerMovement : MonoBehaviour
 
     private void StartTimer()
     {
-        isTimerActive = true;
-        StartCoroutine(TimerCountdown());
+        if (!isTimerActive)
+        {
+            isTimerActive = true;
+            StartCoroutine(TimerCountdown());
+        }
     }
 
     private IEnumerator TimerCountdown()
@@ -76,17 +82,17 @@ public class CustomerMovement : MonoBehaviour
 
         if (timer <= 0f)
         {
-            MoveToLeaveZone();
+            MoveToLeaveZone(false);
         }
     }
 
-    public void MoveToLeaveZone()
+    public void MoveToLeaveZone(bool isHappy)
     {
         GameObject leaveZone = GameObject.FindGameObjectWithTag("LeaveZone");
         if (leaveZone != null)
         {
             Vector3 targetPosition = leaveZone.transform.position;
-            StartCoroutine(MoveAndFreeSpot(targetPosition));
+            StartCoroutine(MoveAndFreeSpot(targetPosition, isHappy));
         }
         else
         {
@@ -94,12 +100,21 @@ public class CustomerMovement : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveAndFreeSpot(Vector3 targetPosition)
+    private IEnumerator MoveAndFreeSpot(Vector3 targetPosition, bool isHappy)
     {
         WaitingLine waitingLine = FindObjectOfType<WaitingLine>();
         if (waitingLine != null)
         {
             waitingLine.FreeSpot(currentSpotIndex); // Free the spot when the customer leaves
+        }
+
+        if (isHappy)
+        {
+            Debug.Log("Customer leaves happily!");
+        }
+        else
+        {
+            Debug.Log("Customer leaves angrily!");
         }
 
         yield return StartCoroutine(MoveTowardsLeaveZone(targetPosition));
@@ -132,5 +147,7 @@ public class CustomerMovement : MonoBehaviour
     {
         return currentSpotIndex; // Replace with the actual field or property that stores the spot index.
     }
+
+
 
 }

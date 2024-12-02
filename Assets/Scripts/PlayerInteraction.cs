@@ -75,8 +75,12 @@ public class PlayerInteraction : MonoBehaviour
         else if (heldItem != null && nearbyDeliveryStation != null)
         {
             nearbyDeliveryStation.PlaceIngredient(heldItem);
-            heldItem.SetActive(false);
-            heldItem = null;
+            if (heldItem.CompareTag("Plate") || heldItem.CompareTag("Cooked") || heldItem.CompareTag("Sliced"))
+            {
+                heldItem.SetActive(false);
+                heldItem = null;
+            }
+
         }
         else if (heldItem == null && nearbyCashierStation != null)
         {
@@ -126,7 +130,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             nearbyCookingStation = collision.collider.GetComponent<CookingStation>();
         }
-        else if ((collision.collider.CompareTag("Bun") || collision.collider.CompareTag("Lettuce") || collision.collider.CompareTag("Raw") || collision.collider.CompareTag("Plate")) && heldItem == null)
+        else if ((collision.collider.CompareTag("Bun") || collision.collider.CompareTag("Lettuce") || collision.collider.CompareTag("Raw") || collision.collider.CompareTag("Plate")) && heldItem == null || collision.collider.CompareTag("Condiments") && heldItem == null)
         {
             nearbyItem = collision.gameObject;
         }

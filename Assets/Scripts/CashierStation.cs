@@ -6,26 +6,22 @@ public class CashierStation : MonoBehaviour
 {
     public DeliveryStation deliveryStation;
     public OrderSpawner orderSpawner;
+    public WaitingLine waitingLine;
 
     public void checkOrder()
     {
         List<string> deliveredIngredients = deliveryStation.ingredientsPlaced;
         List<string> orderIngredients = orderSpawner.order;
-        /* CustomerMovement customerMovement = new CustomerMovement();
-        GameObject leaveZoneObject = GameObject.FindGameObjectWithTag("LeaveZone");
-        Transform leaveZone = leaveZoneObject != null ? leaveZoneObject.transform : null; */
 
         if (AreListsEqual(deliveredIngredients, orderIngredients))
         {
             Debug.Log("Order is correct!");
-            // customerMovement.MoveTowardsLeaveZone(leaveZone.position);
-            // Perform success actions here (e.g., give points, remove items)
+            MoveFirstCustomerToLeaveZone(true);
         }
         else
         {
             Debug.Log("Order is incorrect!");
-            // customerMovement.MoveTowardsLeaveZone(leaveZone.position);
-            // Perform failure actions here (e.g., notify player, reset)
+            MoveFirstCustomerToLeaveZone(false);
         }
     }
 
@@ -53,5 +49,34 @@ public class CashierStation : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void MoveFirstCustomerToLeaveZone(bool isHappy)
+    {
+        if (waitingLine == null)
+        {
+            Debug.LogError("WaitingLine reference is missing in CashierStation!");
+            return;
+        }
+
+        if (waitingLine.customerQueue.Count > 0)
+        {
+            GameObject firstCustomer = waitingLine.customerQueue[0]; // Get the first customer in the queue
+            CustomerMovement customerMovement = firstCustomer.GetComponent<CustomerMovement>();
+
+            if (customerMovement != null)
+            {
+                customerMovement.MoveToLeaveZone(isHappy);
+                waitingLine.RemoveCustomerFromQueue(firstCustomer); // Remove customer from the queue
+            }
+            else
+            {
+                Debug.LogError("CustomerMovement script is missing on the first customer!");
+            }
+        }
+        else
+        {
+            Debug.Log("No customers in the waiting line.");
+        }
     }
 }

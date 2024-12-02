@@ -24,6 +24,7 @@ TagManager:
   - LineSpot
   - CashierStation
   - LeaveZone
+  - Condiments
   layers:
   - Default
   - TransparentFX

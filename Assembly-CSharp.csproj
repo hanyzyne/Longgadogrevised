@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\OrderSpawner.cs" />
     <Compile Include="Assets\Scripts\IngredientType.cs" />
+    <Compile Include="Assets\Scripts\CashierStation.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\RawItem.cs" />
     <Compile Include="Assets\Scripts\PlayerInteraction.cs" />
@@ -71,7 +72,6 @@
     <Compile Include="Assets\Scripts\DeliveryStation.cs" />
     <Compile Include="Assets\Scripts\CustomerSpawner.cs" />
     <Compile Include="Assets\Scripts\WaitingLine.cs" />
-    <Compile Include="Assets\Scripts\CashierStation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

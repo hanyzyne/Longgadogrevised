@@ -4,9 +4,9 @@ using UnityEngine;
 public class WaitingLine : MonoBehaviour
 {
     public Transform[] lineSpots; // Assign this in the Inspector with the spots in the scene
-    private bool[] spotOccupied; // Track whether a spot is occupied by any customer
-    private List<GameObject> customerQueue = new List<GameObject>(); // Queue of customers waiting for a spot
-    private int nextAvailableSpot = 0;  // Keeps track of the next available spot index
+    public bool[] spotOccupied; // Track whether a spot is occupied by any customer
+    public List<GameObject> customerQueue = new List<GameObject>(); // Queue of customers waiting for a spot
+    public int nextAvailableSpot = 0;  // Keeps track of the next available spot index
 
     private void Start()
     {
@@ -27,7 +27,6 @@ public class WaitingLine : MonoBehaviour
             {
                 customerMovement.MoveToSpot(targetSpot.position, nextAvailableSpot);
                 customerMovement.SetAssignedSpotIndex(nextAvailableSpot); // Track the assigned spot
-                customerQueue.Add(customer);  // Add customer to queue
                 OccupySpot(nextAvailableSpot);  // Mark spot as occupied
                 Debug.Log($"Customer assigned to spot {nextAvailableSpot}");
 
@@ -58,18 +57,28 @@ public class WaitingLine : MonoBehaviour
     {
         if (freedSpotIndex >= 0 && freedSpotIndex < spotOccupied.Length && spotOccupied[freedSpotIndex])
         {
-            spotOccupied[freedSpotIndex] = false;  // Free the spot
+            spotOccupied[freedSpotIndex] = false; // Free the spot
             Debug.Log($"Spot {freedSpotIndex} is now freed.");
 
-            // Shift customers after freeing the spot
+            // Remove the customer from the queue
+            GameObject customerToRemove = FindCustomerAtSpot(freedSpotIndex);
+            if (customerToRemove != null)
+            {
+                RemoveCustomerFromQueue(customerToRemove);
+            }
+
+            FindObjectOfType<CustomerSpawner>().EnableSpawning();
+
+            // Shift remaining customers in the queue
             ShiftCustomersToRight(freedSpotIndex);
-            UpdateNextAvailableSpot();  // Ensure the next available spot is updated after freeing
+            UpdateNextAvailableSpot(); // Ensure the next available spot is updated
         }
         else
         {
             Debug.LogWarning($"Attempted to free invalid or already free spot: {freedSpotIndex}");
         }
     }
+
 
 
     public void ShiftCustomersToRight(int freedSpotIndex)
@@ -85,9 +94,9 @@ public class WaitingLine : MonoBehaviour
                 CustomerMovement customerMovement = nextCustomer.GetComponent<CustomerMovement>();
                 if (customerMovement != null && customerMovement.GetAssignedSpotIndex() == i + 1)  // Check if customer is in the next spot
                 {
-                    spotOccupied[i] = AreThereAvailableSpots();  // Mark the freed spot as occupied
                     MoveCustomerToSpot(i + 1, i); // Move the customer to the freed spot
-                    spotOccupied[i + 1] = AreThereAvailableSpots(); // Mark the next spot as free
+                    spotOccupied[i] = true;
+                    spotOccupied[i + 1] = false;
                     UpdateCustomerQueue(i + 1, i); // Update the customer queue to reflect the change
                 }
             }
@@ -155,15 +164,16 @@ public class WaitingLine : MonoBehaviour
         if (customerQueue.Contains(customer))
         {
             int indexToRemove = customerQueue.IndexOf(customer);
-            customerQueue.RemoveAt(indexToRemove);
-            Debug.Log("Customer removed from the queue.");
-            FreeSpot(indexToRemove);  // Free the spot when customer leaves the queue
+            customerQueue.RemoveAt(indexToRemove); // Remove customer from queue
+            spotOccupied[indexToRemove] = false;  // Free the spot
+            Debug.Log($"Customer removed from queue and spot {indexToRemove} freed.");
         }
         else
         {
             Debug.LogWarning("Customer not found in the queue.");
         }
     }
+
 
     public bool AreThereAvailableSpots()
     {
