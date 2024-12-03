@@ -25,6 +25,9 @@ TagManager:
   - CashierStation
   - LeaveZone
   - Condiments
+  - Wall
+  - Tiles
+  - Kitchen counter
   layers:
   - Default
   - TransparentFX
